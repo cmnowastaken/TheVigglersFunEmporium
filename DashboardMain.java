@@ -1,11 +1,11 @@
-/* 
+/**
  * Theme Park Dashboard
  * 
- * Implementing a GUI menu
+ * Implementing cardLayout for windows
  * 
  * Elliott Bell
  * 
- * 24/07/25
+ * 1/08/25
 */
 
 import javax.swing.*;
@@ -16,7 +16,8 @@ import java.awt.event.*;
 
 public class DashboardMain extends JFrame implements ActionListener {
     JFrame mainWindow;
-    String windowName;
+    private JPanel rideCards;
+    private CardLayout rideCardLayout;
     
     private ArrayList<JButton> rideButtons;
     
@@ -28,73 +29,74 @@ public class DashboardMain extends JFrame implements ActionListener {
                           "The Long Drop",
                           "Doom Flume",
                           "Hades' Inferno"};
+                          
+    String[] rideIcons = {"Icons/Corkscrew_Art.png",
+                          "Icons/Bumper_Art.png",
+        
+                         };
     
     public DashboardMain() {        
         mainWindow = new JFrame("The Viggler's Fun Emporium");
         
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
+        rideCardLayout = new CardLayout();
+        rideCards = new JPanel(rideCardLayout);
         
         rideButtons = new ArrayList<>();
 
+        int index = 0;
+        
+        JPanel mainMenu = new JPanel(new FlowLayout());
+        
         for (String rideName : rideNames) {
             JButton rideButton = new JButton(rideName);
             rideButtons.add(rideButton);
         }
         
         for (JButton ride : rideButtons) {
+            int currentIndex = index;
             ride.setIcon(new ImageIcon("Icons/Corkscrew_Art.png"));
+            ride.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    RideHandler(currentIndex);
+                }
+            });
             ride.setHorizontalTextPosition(JButton.CENTER);
             ride.setVerticalTextPosition(JButton.BOTTOM);
             ride.setFocusable(false);
-            panel.add(ride);
+            mainMenu.add(ride);
+            index++;
         }
+        
+        rideCards.add(mainMenu, "menu");
+        
+        rideCards.add(new RideWindow(this, rideNames[0], 12, 4, 24), "ride0");
+        rideCards.add(new RideWindow(this, rideNames[1], 8, 2, 16), "ride1");
+        rideCards.add(new RideWindow(this, rideNames[2], 5, 3, 30), "ride2");
+        rideCards.add(new RideWindow(this, rideNames[3], 16, 6, 40), "ride3");
+        rideCards.add(new RideWindow(this, rideNames[4], 9, 3, 20), "ride4");
+        rideCards.add(new RideWindow(this, rideNames[5], 3, 1, 6), "ride5");
+        rideCards.add(new RideWindow(this, rideNames[6], 4, 2, 9), "ride6");
+        rideCards.add(new RideWindow(this, rideNames[7], 60, 9, 80), "ride7");
     
-        mainWindow.add(panel);
+        mainWindow.add(rideCards);
         mainWindow.setSize(1000, 1000);
         mainWindow.setVisible(true);
         
-        /* Corkscrew = new JButton();
-        Corkscrew.setIcon(new ImageIcon("Icons/Corkscrew_Art.png"));
-        Corkscrew.setBounds(40, 40, 160, 160);
-        Corkscrew.setFocusable(false);
-        Corkscrew.addActionListener(this);
-        this.add(Corkscrew); 
-
-        setTitle("The Viggler's Fun Emporium"); // set the window name for the user input
-        this.getContentPane().setPreferredSize(new Dimension(600, 400)); // set the dimensions of the window off the user inputs
-        this.getContentPane().setLayout(null);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE); // close the window when the program closes.
-        
-        this.pack(); // makes contents above preferred size
-        this.toFront(); // states that the window should be at the front
-        this.setVisible(true); // makes the window visible
-                                
-        mainMenuBar = new JMenuBar();
-        this.setJMenuBar(mainMenuBar);
-        
-        mainMenu = new JMenu("Rides");
-        mainMenuBar.add(mainMenu);
-        
-        mainMenuItem = new JMenuItem("Corkscrew");
-        mainMenu.add(mainMenuItem);
-        
-        mainMenu = new JMenu("Management");
-        mainMenuBar.add(mainMenu);
-        
-        mainMenuItem = new JMenuItem("Staff");
-        mainMenu.add(mainMenuItem);
-        */
+        showMenu();
     }
     public void actionPerformed(ActionEvent e) {
         Object buttonClicked = e.getSource();
         
-        for (int i = 0; i < rideButtons.size(); i++) {
+        for (int i = 0; i <= rideButtons.size(); i++) {
             if (buttonClicked == rideButtons.get(i)) {
-                System.out.println(rideNames[i]);
-                
+                break;
             }
         }
     }
-    // private void RideHandler()
+    private void RideHandler(int index) {
+        rideCardLayout.show(rideCards, "ride" + index);
+    }
+    public void showMenu() {
+        rideCardLayout.show(rideCards, "menu");
+    }
 }
