@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Ride
+comment1.params=waitTime\ lineGrowth\ staffMembers\ rideName
+comment1.target=Ride(int,\ double,\ int,\ java.lang.String)
+comment2.params=
+comment2.target=void\ waitUpdate()
+comment3.params=n
+comment3.target=void\ assignStaff(int)
+comment4.params=n
+comment4.target=void\ removeStaff(int)
+comment5.params=
+comment5.target=int\ getWait()
+comment6.params=
+comment6.target=double\ getGrowth()
+comment7.params=
+comment7.target=int\ getStaff()
+comment8.params=
+comment8.target=java.lang.String\ getName()
+numComments=9
