@@ -1,9 +1,10 @@
 /**
  * Window which each ride will be handled in
+ * Has now been reformatted according to my trialling
  *
  * Elliott Bell
  * 
- * 3/08/25
+ * 4/8/25
 */
 
 import javax.swing.*;
@@ -18,9 +19,26 @@ public class RideWindow extends JPanel {
     private JLabel waitLabel;
     
     public RideWindow(DashboardMain mainMenu, Ride ride) {
-        setLayout(new FlowLayout());
+        setLayout(new GridLayout(5, 1, 10, 10));
         
-        JPanel statsPanel = new JPanel(new GridLayout(3, 1));
+        JLabel rideNameLabel = new JLabel(ride.getName(), SwingConstants.CENTER);
+        rideNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(rideNameLabel);
+        
+        waitLabel = new JLabel("Wait: " + ride.getWait() + " min", SwingConstants.CENTER);
+        waitLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(waitLabel);
+        
+        JPanel staffPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        staffLabel = new JLabel(ride.getStaff() + " staff assigned.");
+        staffLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        JButton addStaff = new JButton();
+        addStaff.setIcon(new ImageIcon("Icons/Add_Button.png"));
+        JButton removeStaff = new JButton();
+        removeStaff.setIcon(new ImageIcon("Icons/Remove_Button.png"));
+    
+        /*
+        JPanel statsPanel = new JPanel(new GridLayout(2, 1));
         
         waitLabel = new JLabel("The line is currently " + ride.getWait() + " minutes long.");
         staffLabel = new JLabel("There are " + ride.getStaff() + " staff assigned.");
@@ -29,12 +47,14 @@ public class RideWindow extends JPanel {
         statsPanel.add(waitLabel);
         add(statsPanel, BorderLayout.EAST);
         
-        JPanel staffControls = new JPanel(new FlowLayout());
+        JPanel staffControls = new JPanel(new GridLayout (3, 1));
         JButton addStaff = new JButton();
         addStaff.setIcon(new ImageIcon("Icons/Add_Button.png"));
         JButton removeStaff = new JButton();
         removeStaff.setIcon(new ImageIcon("Icons/Remove_Button.png"));
         errorLabel = new JLabel("");
+        */
+        
         
         addStaff.addActionListener(e -> {
             if (mainMenu.getFreeStaff() > 0) {
@@ -48,28 +68,28 @@ public class RideWindow extends JPanel {
         });
         
         removeStaff.addActionListener(e -> {
-            if (ride.getStaff() > 0) {
-                ride.removeStaff(1);
+            if (ride.removeStaff(1)) {
                 mainMenu.unassignStaff(1);
                 errorLabel.setText("");
             } else {
-                errorLabel.setText("Cannot go below 0 staff.");
+                errorLabel.setText("Cannot go below 1 staff member.");
             }
             updateLabels(ride, mainMenu);
         });
         
-        staffControls.add(addStaff);
-        staffControls.add(removeStaff);
-        staffControls.add(errorLabel);
-        
-        add(staffControls, BorderLayout.NORTH);
-        
-        JButton returnToMenu = new JButton("Return to menu");
-        returnToMenu.addActionListener(e -> mainMenu.showMenu());
-        add(returnToMenu, BorderLayout.SOUTH);
+        staffPanel.add(staffLabel);
+        staffPanel.add(addStaff);
+        staffPanel.add(removeStaff);
+        add(staffPanel);
+    
+        errorLabel = new JLabel("", SwingConstants.CENTER);
+        errorLabel.setForeground(Color.RED);
+        add(errorLabel);
     }
-    private void updateLabels(Ride ride, DashboardMain mainMenu) {
+    public void updateLabels(Ride ride, DashboardMain mainMenu) {
         waitLabel.setText("The line is currently " + ride.getWait() + " minutes long.");
-        staffLabel.setText("There are " + ride.getStaff() + " staff assigned.");
+        staffLabel.setText(ride.getStaff() + " staff assigned.");
+        mainMenu.updateStaffCounter();
+        mainMenu.updateStaffLabel(ride);
     }
 }

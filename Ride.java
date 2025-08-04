@@ -3,7 +3,7 @@
  * Class with constructors for the rides
  *
  * Elliott Bell
- * 3/8/25
+ * 4/8/25
  */
 
 import java.util.*;
@@ -45,10 +45,12 @@ public class Ride {
         staffMembers += n;
     }
 
-    public void removeStaff(int n) {
+    public boolean removeStaff(int n) {
         if (staffMembers - n > 0) {
             staffMembers -= n;
+            return true;
         }
+        return false;
     }
            
     public int getWait() {
