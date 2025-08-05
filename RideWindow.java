@@ -17,44 +17,33 @@ public class RideWindow extends JPanel {
     private JLabel staffLabel;
     private JLabel errorLabel;
     private JLabel waitLabel;
+    private JLabel maxWaitLabel;
     
     public RideWindow(DashboardMain mainMenu, Ride ride) {
         setLayout(new GridLayout(5, 1, 10, 10));
         
         JLabel rideNameLabel = new JLabel(ride.getName(), SwingConstants.CENTER);
         rideNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        rideNameLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         add(rideNameLabel);
         
         waitLabel = new JLabel("Wait: " + ride.getWait() + " min", SwingConstants.CENTER);
         waitLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(waitLabel);
+            
+        maxWaitLabel = new JLabel("Maximum wait: " + ride.getMaxWait() + " min", SwingConstants.CENTER);
+        add(maxWaitLabel);
         
         JPanel staffPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        
         staffLabel = new JLabel(ride.getStaff() + " staff assigned.");
         staffLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        
         JButton addStaff = new JButton();
         addStaff.setIcon(new ImageIcon("Icons/Add_Button.png"));
+        
         JButton removeStaff = new JButton();
         removeStaff.setIcon(new ImageIcon("Icons/Remove_Button.png"));
-    
-        /*
-        JPanel statsPanel = new JPanel(new GridLayout(2, 1));
-        
-        waitLabel = new JLabel("The line is currently " + ride.getWait() + " minutes long.");
-        staffLabel = new JLabel("There are " + ride.getStaff() + " staff assigned.");
-
-        statsPanel.add(staffLabel);
-        statsPanel.add(waitLabel);
-        add(statsPanel, BorderLayout.EAST);
-        
-        JPanel staffControls = new JPanel(new GridLayout (3, 1));
-        JButton addStaff = new JButton();
-        addStaff.setIcon(new ImageIcon("Icons/Add_Button.png"));
-        JButton removeStaff = new JButton();
-        removeStaff.setIcon(new ImageIcon("Icons/Remove_Button.png"));
-        errorLabel = new JLabel("");
-        */
-        
         
         addStaff.addActionListener(e -> {
             if (mainMenu.getFreeStaff() > 0) {
@@ -91,5 +80,12 @@ public class RideWindow extends JPanel {
         staffLabel.setText(ride.getStaff() + " staff assigned.");
         mainMenu.updateStaffCounter();
         mainMenu.updateStaffLabel(ride);
+        if (ride.isAtMaxWait()) {
+            waitLabel.setText("Wait: " + ride.getWait() + " min (MAX)");
+            waitLabel.setForeground(Color.RED);
+        } else {
+            waitLabel.setText("Wait: " + ride.getWait() + " min");
+            waitLabel.setForeground(Color.BLACK);
+        }
     }
 }
