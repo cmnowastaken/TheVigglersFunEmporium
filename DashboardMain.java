@@ -1,21 +1,17 @@
 /**
  * Theme Park Dashboard
  * 
- * Finishing touches, mainly usability.
- * At this point this is nearly MVP, just have to write the code for the shut down and the maximum line lengths
+ * Final product, just adding comments
  * 
  * Elliott Bell
  * 
- * 4/8/25
+ * 6/8/25
 */
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
-import java.awt.Dimension;
-import java.awt.event.*;
 
 public class DashboardMain extends JFrame {
     JFrame mainWindow; // declare main window, different cards for windows, and the layout
@@ -28,30 +24,27 @@ public class DashboardMain extends JFrame {
     private ArrayList<RideWindow> rideWindows = new ArrayList<>();
     private ArrayList<JButton> rideButtons = new ArrayList<>();
     
-    private int totalStaff = 8;
-    private int freeStaff = totalStaff;
-    private int updateTime = 50;
-    private int horizontalTopPanelSpacing = 50;
-    private int verticalTopPanelSpacing = 8;
-    private int panelWidth = 740;
+    private final int freeStaffReference = 8; // reference variable for the amount of free staff, mainly used in the reset at 22:30
+    private int freeStaff = freeStaffReference; 
+    private int staffPerRide = 1;
+    private int updateTime = 1500; // time between ticks in milliseconds
+    private int horizontalTopPanelSpacing = 20; // spacing for the assigned staff label
+    private int panelWidth = 740; 
     private int defaultPanelHeight = 530;
-    private int dayEndPanelHeight = 560;
-    private int kiddieMaxWaitTime = 60;
-    private int regularMaxWaitTime = 120;
-    private int extremeMaxWaitTime = 180;
-    private int closingHour = 22;
+    private int dayEndPanelHeight = 560; // panel height to allow for the start new day button
+    private int closingHour = 22; // assign the hour and minute that the park is meant to close
     private int closingMinute = 30;
-    private int hour = 9; // assign the hour, it is assumed that when the program is started it is at the start of the day/9:00 AM
+    private int hour = 9; // assign the hour and minute, it is assumed that when the program is started it is at the start of the day/9:00 AM
     private int minute = 0;
     
     private boolean parkClosed = false;
     
     Random rand = new Random();
     
-    private JLabel clockLabel;
+    private JLabel clockLabel; // labels that go at the top of the screen
     private JLabel totalFreeStaffCounter;
     
-    private JButton backButton;
+    private JButton backButton; // the buttons that go at the top of the screen
     private JButton newDayButton;
     
     private Timer timer;
@@ -101,7 +94,7 @@ public class DashboardMain extends JFrame {
             rideButton.setFocusable(false); // make sure the button cannot be focused on; confirms that focus is always on the window for usability
             rideButtons.add(rideButton);
 
-            Ride rideObject = new Ride(rand.nextInt(15), rand.nextInt(10), 1, info.name, info.maxWait); // make a new object for the ride, assign a random popularity and line growth, allows for changeability between days. also assign no staff to start and give it its name.
+            Ride rideObject = new Ride(rand.nextInt(15), rand.nextInt(10), staffPerRide, info.name, info.maxWait); // make a new object for the ride, assign a random popularity and line growth, allows for changeability between days. also assign no staff to start and give it its name.
             rides.add(rideObject); 
             
             JLabel waitLabel = new JLabel("Wait: " + rideObject.getWait() + " min", SwingConstants.CENTER); // create the labels for both the wait and staff assigned to be seen on the home screen
@@ -130,7 +123,7 @@ public class DashboardMain extends JFrame {
         for (int i = 0; i < rides.size(); i++) { // add each ride's window and its number (ride0, ride1, etc.) to allow it to be accessed by the action listener
             RideWindow window = new RideWindow(this, rides.get(i));
             rideWindows.add(window);
-            rideCards.add(window, "ride" + i);
+            rideCards.add(window, "ride" + i); // add the ride based off of its position in the for loop; each ride gets a value assigned to it between ride0 and ride7 to make them easily accessible here
         }
         
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -138,39 +131,40 @@ public class DashboardMain extends JFrame {
         backButton = new JButton();
         backButton.setIcon(new ImageIcon("Icons/Menu_Button.png"));
 
-        backButton.addActionListener(e -> showMenu());
+        backButton.addActionListener(e -> showMenu()); // action listener to allow the back button to return the user to the menu
         topPanel.add(backButton, BorderLayout.WEST);
         
-        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         clockLabel = new JLabel("Time: 09:00");
-        centerPanel.add(clockLabel);
-        topPanel.add(centerPanel, BorderLayout.CENTER);
+        clockLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, horizontalTopPanelSpacing)); // pad out the right hand side of the available staff label 
+        clockLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        centerPanel.add(clockLabel); // panel inside of a panel to follow convention
+        topPanel.add(centerPanel, BorderLayout.CENTER); // add the panel that has been created to the main top panel and format to center
         
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 100));
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         totalFreeStaffCounter = new JLabel("Available staff: " + freeStaff);
-        rightPanel.add(totalFreeStaffCounter);
-        topPanel.add(totalFreeStaffCounter, BorderLayout.EAST);
+        rightPanel.add(totalFreeStaffCounter); // panel inside of a panel to follow convention
+        topPanel.add(totalFreeStaffCounter, BorderLayout.EAST); // add the panel that has been created to the main top panel and format to east
         
         newDayButton = new JButton("Start New Day");
-        newDayButton.setVisible(false);
-        newDayButton.addActionListener(e -> startNewDay());
+        newDayButton.setVisible(false); // make this button invisible until it is needed at the end of the day
+        newDayButton.addActionListener(e -> startNewDay()); // make this button call the startNewDay method
         topPanel.add(newDayButton, BorderLayout.SOUTH);
         
-        mainWindow.add(topPanel, BorderLayout.NORTH);
+        mainWindow.add(topPanel, BorderLayout.NORTH); // add all of the cards and panels to the window, and then resize it.
         mainWindow.add(rideCards);
-        mainWindow.add(topPanel, BorderLayout.NORTH);
         mainWindow.setSize(panelWidth, defaultPanelHeight);
         mainWindow.setResizable(false);
         mainWindow.setVisible(true);
         
-        timer = new Timer(updateTime, e -> {
-            for (int i = 0; i < rides.size(); i++) {
-                rides.get(i).waitUpdate();
-                waitLabels.get(i).setText("Wait time: " + rides.get(i).getWait() + " min");
+        timer = new Timer(updateTime, e -> { // run this code every updateTime ms
+            for (int i = 0; i < rides.size(); i++) { // update all of the rides
+                rides.get(i).waitUpdate(); // update the wait time for the rides on the tick
+                waitLabels.get(i).setText("Wait: " + rides.get(i).getWait() + " min");
                 rideWindows.get(i).updateLabels(rides.get(i), this);
                 
                 if (rides.get(i).isAtMaxWait()) {
-                    waitLabels.get(i).setText("Wait: " + rides.get(i).getWait() + " min (MAX)");
+                    waitLabels.get(i).setText("Wait: " + rides.get(i).getWait() + " min (MAX)"); // show that a ride is at max wait time if it is at max wait time
                     waitLabels.get(i).setForeground(Color.RED);
                 } else {
                     waitLabels.get(i).setText("Wait: " + rides.get(i).getWait() + " min");
@@ -178,16 +172,16 @@ public class DashboardMain extends JFrame {
                 }
             }
             
-            minute += 10;
-            if (minute >= 60) {
+            minute += 10; // add 10 minutes to the clock
+            if (minute >= 60) { // add 1 to the hour and reset the clock if the minutes is at 60
                 minute = 0;
                 hour++;
                 if (hour >= 24) hour = 0;
             } 
                 
-            String timeString = String.format("Time: %02d:%02d", hour, minute);
+            String timeString = String.format("Time: %02d:%02d", hour, minute); // format the string to pad with zeroes until the time is two digits long, substitute in the hour and the minute
             clockLabel.setText(timeString);
-            if (!parkClosed && hour == closingHour && minute == closingMinute) {
+            if (!parkClosed && hour == closingHour && minute == closingMinute) { // if the park is not already closed and it is the closing hour and minute, close the park
                 parkClosing();
             }
         });
@@ -196,64 +190,73 @@ public class DashboardMain extends JFrame {
         
         showMenu();
     }
-    private void RideHandler(int index) {
+    private void RideHandler(int index) { // handles showing the ride cards when the buttons are pressed
         rideCardLayout.show(rideCards, "ride" + index);
         setBackButtonVisible(true);
     }
-    public void showMenu() {
+    public void showMenu() { // allow the user to go back to the menu from the ride cards
         rideCardLayout.show(rideCards, "menu");
         setBackButtonVisible(false);
     }
-    public void updateStaffCounter() {
+    public void updateStaffCounter() { // allows me to update the staff counter without relying on the timer; does it instantly
         totalFreeStaffCounter.setText("Available staff: " + freeStaff);
+        totalFreeStaffCounter.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, horizontalTopPanelSpacing)); // pads out the border
     }
     public void updateStaffLabel(Ride ride) {
-        int index = rides.indexOf(ride);
+        int index = rides.indexOf(ride); // get the ride
         if (index >= 0) {
-            staffLabels.get(index).setText(ride.getStaff() + " staff assigned");
+            staffLabels.get(index).setText(ride.getStaff() + " staff assigned"); // reestablish the amount of staff assigned to the ride
         }
     }
-    public void setBackButtonVisible(boolean visible) {
+    public void setBackButtonVisible(boolean visible) { // make the back button visible (only used in rideWindow)
         backButton.setVisible(visible);
     }
-    private void parkClosing() {
-        parkClosed = true;
+    private void parkClosing() { // method for closing the park
+        parkClosed = true; // boolean so that the tick does not fire multiple times
         timer.stop();
-        mainWindow.setSize(panelWidth, dayEndPanelHeight);
+        mainWindow.setSize(panelWidth, dayEndPanelHeight); // change the height of the panel to account for the start new day button
         
-        for (JButton button : rideButtons) {
+        for (JButton button : rideButtons) { // disable buttons so that they cannot be clicked
             button.setEnabled(false);
         }
         
-        JOptionPane.showMessageDialog(mainWindow, 
+        for (RideWindow window : rideWindows) { // disable staff controls so that staff cannot be moved around
+            window.setStaffControlsEnabled(false);
+        }
+        
+        JOptionPane.showMessageDialog(mainWindow, // show a popup to let the user know that the park is closing
                                       "The park is now closed. Come back tomorrow!", 
                                       "Park Closing", 
                                       JOptionPane.INFORMATION_MESSAGE);
-        newDayButton.setVisible(true);
+        newDayButton.setVisible(true); // add the back button
     }
-    private void startNewDay() {
-        hour = 9;
+    private void startNewDay() { // method for when the startNewDay button is pressed
+        hour = 9; // reset the hour and minute to what they are at the start of the day, as well as the boolean
         minute = 0;
         parkClosed = false;
-        mainWindow.setSize(panelWidth, defaultPanelHeight);
+        mainWindow.setSize(panelWidth, defaultPanelHeight); // no more startNewDay button so we can use the regular panel height
         
-        freeStaff = totalStaff;
-    
-        for (Ride ride : rides) {
+        String timeString = String.format("Time: %02d:%02d", hour, minute); // reformat the clock
+        clockLabel.setText(timeString); // set the clock
+        
+        freeStaff = freeStaffReference; // use the final to reassign the free staff
+        
+        for (Ride ride : rides) { // reset the ride staff and wait time
             ride.resetForNewDay(); 
         }
         
-        for (JButton button : rideButtons) {
+        for (JButton button : rideButtons) { // reenable the buttons
             button.setEnabled(true);
         }
     
         updateStaffCounter();
-        for (int i = 0; i < rides.size(); i++) {
+        for (int i = 0; i < rides.size(); i++) { // reset all of the labels and controls to the start of day values
             waitLabels.get(i).setText("Wait time: " + rides.get(i).getWait() + " minutes");
             rideWindows.get(i).updateLabels(rides.get(i), this);
+            rideWindows.get(i).setStaffControlsEnabled(true);
         }
         
-        newDayButton.setVisible(false);
-        timer.start();
+        newDayButton.setVisible(false); // get ride of the new day button
+        timer.start(); // restart the timer
     }
 }

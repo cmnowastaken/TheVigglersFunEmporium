@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=RideInfo
-comment0.text=\n\ Helper\ class\ to\ make\ the\ info\ for\ the\ rides\ more\ clean\ \n\ \n\ Elliott\ Bell\n\ 5/8/25\n
+comment0.text=\n\ Helper\ class\ to\ make\ the\ info\ for\ the\ rides\ more\ clean\ \n\ \n\ Elliott\ Bell\n\ 6/8/25\n
 comment1.params=name\ iconPath\ maxWait
 comment1.target=RideInfo(java.lang.String,\ java.lang.String,\ int)
 numComments=2
