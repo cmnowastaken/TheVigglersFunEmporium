@@ -1,9 +1,11 @@
 /**
- * Window which each ride will be handled in
+ * The Viggler's Fun Emporium
+ * 
+ * Dashboard for a simulated theme park; move staff to mitigate lines
  *
  * Elliott Bell
  * 
- * 6/8/25
+ * 8/8/25
 */
 
 import javax.swing.*;
@@ -71,11 +73,11 @@ public class RideWindow extends JPanel {
         add(errorLabel);
     }
     public void updateLabels(Ride ride, DashboardMain mainMenu) {
-        waitLabel.setText("Wait: " + ride.getWait() + " min"); // set the labels when they update
-        staffLabel.setText(ride.getStaff() + " staff assigned.");
+        staffLabel.setText(ride.getStaff() + " staff assigned."); // show the user the amount of staff on the ride
         mainMenu.updateStaffCounter();
         mainMenu.updateStaffLabel(ride);
-        if (ride.isAtMaxWait()) { // if the ride is at the maximum wait time, let the user know for user experience
+
+        if (ride.isAtMaxWait()) { // let the user know if the ride is at maximum queue capacity
             waitLabel.setText("Wait: " + ride.getWait() + " min (MAX)");
             waitLabel.setForeground(Color.RED);
         } else {

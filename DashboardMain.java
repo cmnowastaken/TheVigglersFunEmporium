@@ -1,11 +1,13 @@
 /**
- * Theme Park Dashboard
+ * The Viggler's Fun Emporium
  * 
- * Final product, just adding comments
+ * Dashboard for a simulated theme park; move staff to mitigate lines
+ * 
+ * Main class, holds the code for the main menu mainly
  * 
  * Elliott Bell
  * 
- * 6/8/25
+ * 8/8/25
 */
 
 import javax.swing.*;
@@ -27,7 +29,7 @@ public class DashboardMain extends JFrame {
     private final int freeStaffReference = 8; // reference variable for the amount of free staff, mainly used in the reset at 22:30
     private int freeStaff = freeStaffReference; 
     private int staffPerRide = 1;
-    private int updateTime = 1500; // time between ticks in milliseconds
+    private int updateTime = 500; // time between ticks in milliseconds
     private int horizontalTopPanelSpacing = 20; // spacing for the assigned staff label
     private int panelWidth = 740; 
     private int defaultPanelHeight = 530;
@@ -36,6 +38,7 @@ public class DashboardMain extends JFrame {
     private int closingMinute = 30;
     private int hour = 9; // assign the hour and minute, it is assumed that when the program is started it is at the start of the day/9:00 AM
     private int minute = 0;
+    private int tickLength = 10;
     
     private boolean parkClosed = false;
     
@@ -94,7 +97,7 @@ public class DashboardMain extends JFrame {
             rideButton.setFocusable(false); // make sure the button cannot be focused on; confirms that focus is always on the window for usability
             rideButtons.add(rideButton);
 
-            Ride rideObject = new Ride(rand.nextInt(15), rand.nextInt(10), staffPerRide, info.name, info.maxWait); // make a new object for the ride, assign a random popularity and line growth, allows for changeability between days. also assign no staff to start and give it its name.
+            Ride rideObject = new Ride(rand.nextInt(2*tickLength), rand.nextInt(1*tickLength), staffPerRide, info.name, info.maxWait); // make a new object for the ride, assign a random popularity and line growth, allows for changeability between days. also assign no staff to start and give it its name.
             rides.add(rideObject); 
             
             JLabel waitLabel = new JLabel("Wait: " + rideObject.getWait() + " min", SwingConstants.CENTER); // create the labels for both the wait and staff assigned to be seen on the home screen
@@ -172,7 +175,7 @@ public class DashboardMain extends JFrame {
                 }
             }
             
-            minute += 10; // add 10 minutes to the clock
+            minute += tickLength; // add 10 minutes to the clock
             if (minute >= 60) { // add 1 to the hour and reset the clock if the minutes is at 60
                 minute = 0;
                 hour++;
@@ -241,19 +244,18 @@ public class DashboardMain extends JFrame {
         
         freeStaff = freeStaffReference; // use the final to reassign the free staff
         
-        for (Ride ride : rides) { // reset the ride staff and wait time
-            ride.resetForNewDay(); 
-        }
-        
         for (JButton button : rideButtons) { // reenable the buttons
             button.setEnabled(true);
         }
     
         updateStaffCounter();
         for (int i = 0; i < rides.size(); i++) { // reset all of the labels and controls to the start of day values
-            waitLabels.get(i).setText("Wait time: " + rides.get(i).getWait() + " minutes");
+            rides.get(i).resetForNewDay(); 
             rideWindows.get(i).updateLabels(rides.get(i), this);
+            waitLabels.get(i).setText("Wait: " + rides.get(i).getWait() + " min");
+            waitLabels.get(i).setForeground(Color.BLACK);
             rideWindows.get(i).setStaffControlsEnabled(true);
+            rides.get(i).waitUpdate();
         }
         
         newDayButton.setVisible(false); // get ride of the new day button

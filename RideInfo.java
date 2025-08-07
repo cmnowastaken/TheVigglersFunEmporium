@@ -1,10 +1,14 @@
-
 /**
+ * The Viggler's Fun Emporium
+ * 
+ * Dashboard for a simulated theme park; move staff to mitigate lines
+ * 
  * Helper class to make the info for the rides more clean 
  * 
  * Elliott Bell
- * 6/8/25
+ * 8/8/25
  */
+
 public class RideInfo { // stores the format of the information for the rides to more effectively declare the rides in DashboardMain
     String name;
     String iconPath;

@@ -1,9 +1,14 @@
 
 /**
- * Class with constructors for the rides
+ * The Viggler's Fun Emporium
+ * 
+ * Dashboard for a simulated theme park; move staff to mitigate lines
+ * 
+ * Class for information for the ride object
  *
  * Elliott Bell
- * 6/8/25
+ * 
+ * 8/8/25
  */
 
 import java.util.*;
